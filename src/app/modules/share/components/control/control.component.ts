@@ -8,6 +8,7 @@ import { trigger, animate, style, transition, keyframes } from '@angular/animati
 import { StoreJobInfo, StoreJobStatus } from 'app/modules/client/models/store-job-info';
 import { BuyService } from 'app/services/buy.service';
 import { UserAppsService } from 'app/services/user-apps.service';
+import { SysAuthService } from 'app/services/sys-auth.service';
 
 @Component({
   selector: 'dstore-control',
@@ -53,6 +54,8 @@ export class ControlComponent implements OnInit, OnChanges {
     private jobService: JobService,
     private buyService: BuyService,
     private userAppService: UserAppsService,
+    private sysAuth: SysAuthService,
+
   ) {}
   @Input() soft: Software;
   @Output() job$: Observable<any>;
@@ -61,6 +64,7 @@ export class ControlComponent implements OnInit, OnChanges {
   JobStatus = StoreJobStatus;
   show = false;
   id = Math.random();
+  noIntranetAuth$ = this.sysAuth.noIntranetAuth$;
   ngOnInit() {}
   ngOnChanges(c: SimpleChanges) {
     if (c.soft) {
@@ -120,5 +124,8 @@ export class ControlComponent implements OnInit, OnChanges {
       job.status = this.JobStatus.paused;
       this.jobService.stopJob(job.job);
     }
+  }
+  noIntranetAuthNotify() {
+    this.sysAuth.notifyIntranetFail();
   }
 }
